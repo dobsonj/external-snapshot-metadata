@@ -1,0 +1,9 @@
+FROM registry.ci.openshift.org/ocp/builder:rhel-9-golang-1.24-openshift-4.20 AS builder
+WORKDIR /go/src/github.com/kubernetes-csi/external-snapshot-metadata
+COPY . .
+RUN go build -mod=vendor -o bin/snapshot-metadata-lister ./examples/snapshot-metadata-lister
+RUN go build -mod=vendor -o bin/snapshot-metadata-verifier ./examples/snapshot-metadata-verifier
+
+FROM registry.ci.openshift.org/ocp/4.20:base-rhel9
+COPY --from=builder /go/src/github.com/kubernetes-csi/external-snapshot-metadata/bin/snapshot-metadata-lister /usr/bin/
+COPY --from=builder /go/src/github.com/kubernetes-csi/external-snapshot-metadata/bin/snapshot-metadata-verifier /usr/bin/
