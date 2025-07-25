@@ -2,9 +2,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: csi-snapshot-metadata
-  namespace: csi-driver
+  namespace: openshift-cluster-csi-drivers
   labels:
     app.kubernetes.io/name: csi-snapshot-metadata
+  annotations:
+    service.beta.openshift.io/serving-cert-secret-name: csi-snapshot-metadata-certs
 spec:
   ports:
   - name: snapshot-metadata
