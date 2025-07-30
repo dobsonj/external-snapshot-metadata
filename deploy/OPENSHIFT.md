@@ -307,6 +307,48 @@ Record#   VolCapBytes  BlockMetadataType   ByteOffset     SizeBytes
       1     1073741824      FIXED_LENGTH          36864           4096
 ```
 
+### Check diff between two snapshots
+
+Write some more data:
+```
+oc exec -n testns pod-raw -- dd if=/dev/urandom of=/dev/loop3 bs=4K count=5 seek=15 conv=notrunc
+```
+
+Create another snapshot:
+```
+oc apply -f - <<EOF
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: test-snapshot2
+  namespace: testns
+spec:
+  volumeSnapshotClassName: csi-hostpath-snapclass
+  source:
+    persistentVolumeClaimName: csi-pvc
+EOF
+```
+
+Wait for it to be ready:
+```
+$ oc get volumesnapshot -n testns
+NAME             READYTOUSE   SOURCEPVC   SOURCESNAPSHOTCONTENT   RESTORESIZE   SNAPSHOTCLASS            SNAPSHOTCONTENT                                    CREATIONTIME   AGE
+test-snapshot1   true         csi-pvc                             1Gi           csi-hostpath-snapclass   snapcontent-c07dccac-3031-402d-a718-8643a8abba87   3m46s          3m46s
+test-snapshot2   true         csi-pvc                             1Gi           csi-hostpath-snapclass   snapcontent-61be4ca0-f51a-42e8-ae50-068afcaac614   9s             9s
+```
+
+Use snapshot-metadata-lister to see the incremental changes:
+```
+$ oc exec -n testns snapshot-metadata-tools -- snapshot-metadata-lister -n testns -p test-snapshot1 -s test-snapshot2
+Record#   VolCapBytes  BlockMetadataType   ByteOffset     SizeBytes
+------- -------------- ----------------- -------------- --------------
+      1     1073741824      FIXED_LENGTH          61440           4096
+      1     1073741824      FIXED_LENGTH          65536           4096
+      1     1073741824      FIXED_LENGTH          69632           4096
+      1     1073741824      FIXED_LENGTH          73728           4096
+      1     1073741824      FIXED_LENGTH          77824           4096
+```
+
 
 ## References
 
