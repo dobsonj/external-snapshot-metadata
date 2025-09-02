@@ -117,8 +117,6 @@ EOF
 oc apply -f ${CSI_DRIVER_HOST_PATH_REPO}/deploy/kubernetes-1.30/hostpath/csi-hostpath-plugin.yaml
 ```
 
-**TODO:** replace upstream image with OpenShift build
-
 Make sure the pod is running:
 ```
 $ oc get pods -n openshift-cluster-csi-drivers csi-hostpathplugin-0
@@ -357,4 +355,6 @@ Record#   VolCapBytes  BlockMetadataType   ByteOffset     SizeBytes
 * https://github.com/kubernetes-csi/external-snapshot-metadata/blob/main/deploy/README.md
 * https://github.com/kubernetes-csi/external-snapshot-metadata/blob/main/deploy/example/csi-driver/README.md
 * https://github.com/kubernetes-csi/external-snapshot-metadata/blob/main/deploy/example/backup-app/README.md
+* https://github.com/kubernetes-csi/external-snapshot-metadata/blob/main/client/apis/snapshotmetadataservice/v1alpha1/types.go
+* https://github.com/kubernetes/enhancements/blob/master/keps/sig-storage/3314-csi-changed-block-tracking/README.md
 
