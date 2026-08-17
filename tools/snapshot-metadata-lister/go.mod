@@ -1,4 +1,4 @@
-module github.com/kubernetes-csi/external-snapshot-metadata/tools/snapshot-metadata-lister
+module github.com/dobsonj/external-snapshot-metadata/tools/snapshot-metadata-lister
 
 go 1.26.1
 
